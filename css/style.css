@@ -1,6 +1,8 @@
-@charset "utf-8"
+@charset "utf-8";
 
 body {
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
 }
 
 img {
@@ -104,9 +106,22 @@ button:hover {
   align-items: center;
 }
 
+#chart-btn {
+  width: 100px;
+  font-size: larger;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
 #chart {
+  width: 300px;
   position: absolute;
   right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #chart_list {
@@ -124,7 +139,7 @@ button:hover {
   font-size: 16px;
   font-weight: bold;
   float: right;
-  width: calc(60% - 10px);
+  width: 100%;
   text-align: center;
   border: solid black 0.5px;
   border-radius: 20px;
@@ -161,4 +176,19 @@ button:hover {
 
 #controler-btn > div {
   margin: 0 20px;
+}
+
+.blink_result {
+  animation: blinkAnimeS2 2s infinite alternate;
+}
+
+@keyframes blinkAnimeS2 {
+  0% {
+    color: red;
+    background: white;
+  }
+  100% {
+    color: white;
+    background: red;
+  }
 }

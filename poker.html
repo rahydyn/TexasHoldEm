@@ -96,16 +96,21 @@
             </div>
           </div>
           <div id="chart">
-            <ul id="chart_list">
-              <li class="strength" id="SF">Straight Flush</li>
-              <li class="strength" id="FK">Four-of-a-Kind</li>
-              <li class="strength" id="FH">Full House</li>
-              <li class="strength" id="FL">Flush</li>
-              <li class="strength" id="SR">Straight</li>
-              <li class="strength" id="TK">Three-of-a-Kind</li>
-              <li class="strength" id="TP">Two-Pair</li>
-              <li class="strength" id="OP">One-Pair</li>
-            </ul>
+            <div>
+              <input type="button" value="Close" id="chart-btn" />
+            </div>
+            <div id="chart_block">
+              <ul id="chart_list">
+                <li class="strength" id="SF">Straight Flush</li>
+                <li class="strength" id="FK">Four-of-a-Kind</li>
+                <li class="strength" id="FH">Full House</li>
+                <li class="strength" id="FL">Flush</li>
+                <li class="strength" id="SR">Straight</li>
+                <li class="strength" id="TK">Three-of-a-Kind</li>
+                <li class="strength" id="TP">Two-Pair</li>
+                <li class="strength" id="OP">One-Pair</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -135,6 +140,17 @@
   </body>
   <script>
     main();
+
+    $("#chart-btn").on("click", function () {
+      $("#chart_block").slideToggle();
+      if ($("#chart_block").hasClass("chart-btn_open") == false) {
+        $("#chart_block").addClass("chart-btn_open");
+        $("#chart-btn").attr("value", "Open");
+      } else {
+        $("#chart_block").removeClass("chart-btn_open");
+        $("#chart-btn").attr("value", "Close");
+      }
+    });
 
     function main() {
       [
@@ -282,6 +298,8 @@
               $("#rival_result").css("font-size", "20px");
               $("#rival_result").css("font-weight", "bold");
             }
+            let blink_id = "#" + blinkResult(result, player_strength);
+            $(blink_id).addClass("blink_result");
             let pattern = showStrongPattern(player_num_strong[result]);
             moveUseCard(pattern, result);
             $("#call>button").attr("onclick", "window.location.reload();");
@@ -435,6 +453,29 @@
 
     //
     function solvePossibility() {}
+
+    function blinkResult(result, player_strength) {
+      if (result != -1) {
+        let id_factor = player_strength[result][0];
+        if (id_factor == 1) {
+          return "OP";
+        } else if (id_factor == 2) {
+          return "TP";
+        } else if (id_factor == 3) {
+          return "TK";
+        } else if (id_factor == 4) {
+          return "SR";
+        } else if (id_factor == 5) {
+          return "FL";
+        } else if (id_factor == 6) {
+          return "FH";
+        } else if (id_factor == 7) {
+          return "FK";
+        } else if (id_factor == 8) {
+          return "SF";
+        }
+      }
+    }
 
     function moveUseCard(pattern, player) {
       let pattern_strong = pattern[player_num_strong[player]];
