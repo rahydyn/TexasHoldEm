@@ -8,9 +8,40 @@ img {
   width: 100%;
 }
 
+button {
+  margin: 0 auto;
+  padding: 1em 2em;
+  width: 300px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 700;
+  background-color: #cccccc;
+  box-shadow: 0 5px 0 #aaaaaa;
+  transition: 0.3s;
+  text-align: center;
+  border-radius: 50px;
+}
+
+button::after {
+  width: 5px;
+  height: 5px;
+  border-top: 3px solid #333333;
+  border-right: 3px solid #333333;
+}
+
+button:hover {
+  transform: translateY(3px);
+  text-decoration: none;
+  box-shadow: 0 2px 0 #aaaaaa;
+}
+
 #container {
   padding: 20px;
-  background: radial-gradient(circle 1000px,rgb(152,251,152),rgb(0,100,30));
+  background: radial-gradient(
+    circle 1000px,
+    rgb(152, 251, 152),
+    rgb(0, 100, 30)
+  );
 }
 
 #header {
@@ -59,9 +90,44 @@ img {
   transform: rotateY(180deg);
 }
 
+#player1 {
+  /* display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; */
+}
+
 .hand {
   display: flex;
   justify-content: center;
+  position: relative;
+  align-items: center;
+}
+
+#chart {
+  position: absolute;
+  right: 40px;
+}
+
+#chart_list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#chart_list > li {
+  line-height: 1.5;
+  padding: 0.3em 0;
+  margin-top: 1px;
+  background-color: gray;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  float: right;
+  width: calc(60% - 10px);
+  text-align: center;
+  border: solid black 0.5px;
+  border-radius: 20px;
 }
 
 #indicator {
@@ -91,4 +157,8 @@ img {
 #controler-btn {
   display: flex;
   justify-content: center;
+}
+
+#controler-btn > div {
+  margin: 0 20px;
 }

@@ -95,173 +95,61 @@
               <img src="" alt="" class="player1_img_2" />
             </div>
           </div>
-        </div>
-        <div id="indicator">
-          <div id="pat_hand">
-            <div id="your_result"></div>
-            <div id="show_vs"></div>
-            <div id="rival_result"></div>
+          <div id="chart">
+            <ul id="chart_list">
+              <li class="strength" id="SF">Straight Flush</li>
+              <li class="strength" id="FK">Four-of-a-Kind</li>
+              <li class="strength" id="FH">Full House</li>
+              <li class="strength" id="FL">Flush</li>
+              <li class="strength" id="SR">Straight</li>
+              <li class="strength" id="TK">Three-of-a-Kind</li>
+              <li class="strength" id="TP">Two-Pair</li>
+              <li class="strength" id="OP">One-Pair</li>
+            </ul>
           </div>
-          <div id="win_lose">
-            <div></div>
-          </div>
         </div>
-        <div id="controler">
-          <div id="controler-btn">
-            <div id="call">
-              <button class="step1">すすめる</button>
-            </div>
-            <div id="fold">
-              <button class="step1" onclick="window.location.reload();">
-                やめる
-              </button>
-            </div>
+      </div>
+      <div id="indicator">
+        <div id="pat_hand">
+          <div id="your_result"></div>
+          <div id="show_vs"></div>
+          <div id="rival_result"></div>
+        </div>
+        <div id="win_lose">
+          <div></div>
+        </div>
+      </div>
+      <div id="controler">
+        <div id="controler-btn">
+          <div id="call">
+            <button class="step1">すすめる</button>
+          </div>
+          <div id="fold">
+            <button class="step1" onclick="window.location.reload();">
+              やめる
+            </button>
           </div>
         </div>
       </div>
     </div>
   </body>
   <script>
-    // game
-    // pregame
-    // カード配る
-    // 乱数
-    let card = [];
-    let hole_cards = [];
-    let cof = true;
-
-    let num_players = 2;
-    let num_cards = 5 + num_players * 2;
-    const max_num_cards = 52;
-
-    let used = [];
-    let com_cards = [];
-
-    const test_hand = [
-      [0, 0],
-      [1, 0],
-      [2, 0],
-      [1, 11],
-      [3, 12],
-    ];
-
-    let strength = [-1, -1, -1, ""];
-    let player_strength = [];
-    let player_num_strong = [];
-
-    // 順列生成アルゴリズム：ダステンフェルド法（FY法の改良版）
-    function durstenfeld() {
-      used = [];
-      let array = [];
-      for (let i = 0; i < max_num_cards; i++) {
-        array.push(i);
-      }
-      for (let j = 0; j < num_cards; j++) {
-        let index_card = Math.ceil(Math.random() * (max_num_cards - j)) - 1;
-        used.push(array[index_card]);
-        array.splice(index_card, 1);
-      }
-    }
-
-    function getCard(index) {
-      let mark = index % 4;
-      let number = index % 13;
-      let card = [mark, number];
-      return card;
-    }
-
-    function getHoleCards() {
-      for (let i = 0; i < num_players; i++) {
-        let tmp_1 = getCard(used[i * 2]);
-        let tmp_2 = getCard(used[i * 2 + 1]);
-        hole_cards.push(tmp_1);
-        hole_cards.push(tmp_2);
-      }
-    }
-
-    function getComCards() {
-      for (let i = 0; i < num_cards - num_players * 2; i++) {
-        com_cards.push(getCard(used[i + num_players * 2]));
-      }
-    }
-
-    durstenfeld();
-    getHoleCards();
-    getComCards();
-
-    // prefrop
-
-    let vis_card = hole_cards.slice(0, 2);
-    let cpu_card = hole_cards.slice(2, 4);
-
-    // frop
-    // 3枚配る
-    let com_card1 = com_cards[0];
-    let com_card2 = com_cards[1];
-    let com_card3 = com_cards[2];
-    let com_card4 = com_cards[3];
-    let com_card5 = com_cards[4];
-    console.log(com_cards);
-    // ベットアクション（コールorフォールド）
-    // turn
-    // 1枚配る
-    // ベットアクション（コールorフォールド）
-    // river
-    // 1枚配る
-
-    // ベットアクション（コールorフォールド）
-
-    console.log("------------used------------");
-    console.log(used);
-    console.log("------------used------------");
-    // strength=judgeHands(test_hand);
-    // console.log(strength);
-
-    // hands
-    // 10通り Combination 5/3 =10
-    let combination_hands = [];
-    let num_strong = 0;
-    // your hand
-    combination_hands = combinationComCards(
-      hole_cards,
-      com_cards,
-      num_players,
-      0
-    );
-    [strength, num_strong] = selfJudge(
-      combination_hands,
-      num_strong,
-      strength,
-      0
-    );
-    player_strength.push(strength);
-    player_num_strong.push(num_strong);
-
-    // rival hand
-    combination_hands = combinationComCards(
-      hole_cards,
-      com_cards,
-      num_players,
-      1
-    );
-    [strength, num_strong] = selfJudge(
-      combination_hands,
-      num_strong,
-      strength,
-      1
-    );
-    player_strength.push(strength);
-    player_num_strong.push(num_strong);
-
-    let result;
-    result = vsJudge(player_strength);
-    console.log(player_num_strong[0]);
-    console.log(player_num_strong[1]);
-    console.log(result);
-
     main();
 
     function main() {
+      [
+        cpu_card,
+        com_cards,
+        vis_card,
+        player_strength,
+        result,
+        player_num_strong,
+      ] = initialize();
+      let com_card1 = com_cards[0];
+      let com_card2 = com_cards[1];
+      let com_card3 = com_cards[2];
+      let com_card4 = com_cards[3];
+      let com_card5 = com_cards[4];
       $("#call>button").on("click", function () {
         if ($(this).hasClass("step1") == true) {
           $(".player1_img_1").css("display", "none");
@@ -313,6 +201,7 @@
               "transform",
               "rotateY(-180deg)"
             );
+            solvePossibility();
           }, 1000);
 
           $(this).addClass("step2");
@@ -336,6 +225,7 @@
             );
             $(".card_frop>.card_back").css("transform", "rotateY(0)");
             $(".card_frop>.card_front").css("transform", "rotateY(-180deg)");
+            solvePossibility();
           }, 1000);
           $(this).addClass("step3");
           $(this).removeClass("step2");
@@ -348,6 +238,7 @@
             );
             $(".card_turn>.card_back").css("transform", "rotateY(0)");
             $(".card_turn>.card_front").css("transform", "rotateY(-180deg)");
+            solvePossibility();
           }, 1000);
           $(this).addClass("step4");
           $(this).removeClass("step3");
@@ -360,6 +251,7 @@
             );
             $(".card_river>.card_back").css("transform", "rotateY(0)");
             $(".card_river>.card_front").css("transform", "rotateY(-180deg)");
+            solvePossibility();
           }, 1000);
           $(this).addClass("step5");
           $(this).removeClass("step4");
@@ -373,10 +265,22 @@
             $("#rival_result").html(player_strength[1][3]);
             if (result == 0) {
               $("#win_lose").html("YOU WIN");
+              $("#win_lose").css("color", "red");
+              $("#win_lose").css("font-size", "20px");
+              $("#win_lose").css("font-weight", "bold");
+              $("#your_result").css("color", "red");
+              $("#your_result").css("font-size", "20px");
+              $("#your_result").css("font-weight", "bold");
             } else if (result == -1) {
               $("#win_lose").html("EVEN");
             } else {
               $("#win_lose").html("YOU LOSE");
+              $("#win_lose").css("color", "red");
+              $("#win_lose").css("font-size", "20px");
+              $("#win_lose").css("font-weight", "bold");
+              $("#rival_result").css("color", "red");
+              $("#rival_result").css("font-size", "20px");
+              $("#rival_result").css("font-weight", "bold");
             }
             let pattern = showStrongPattern(player_num_strong[result]);
             moveUseCard(pattern, result);
@@ -389,6 +293,148 @@
         }
       });
     }
+
+    function initialize(num_players) {
+      let card = [];
+      let hole_cards = [];
+      // let cof = true;
+
+      // game
+      // pregame
+      // カード配る
+      // 乱数
+      num_players = 2; //1on1
+      let num_cards = 5 + num_players * 2;
+      const max_num_cards = 52;
+
+      let used = [];
+      let com_cards = [];
+
+      // TODO: 2ペア時のキッカーが不十分のため修正の必要あり
+      let strength = [-1, -1, -1, ""];
+      let player_strength = [];
+      let player_num_strong = [];
+
+      used = durstenfeld(used, max_num_cards, num_cards);
+      hole_cards = getHoleCards(hole_cards, num_players, used);
+      com_cards = getComCards(com_cards, num_cards, num_players, used);
+
+      // prefrop
+      // TODO: 人数増えた場合、修正の必要あり
+      let vis_card = hole_cards.slice(0, 2);
+      let cpu_card = hole_cards.slice(2, 4);
+
+      // frop
+      // 3枚配る
+
+      console.log(com_cards);
+      // ベットアクション（コールorフォールド）
+      // turn
+      // 1枚配る
+      // ベットアクション（コールorフォールド）
+      // river
+      // 1枚配る
+
+      // ベットアクション（コールorフォールド）
+
+      console.log("------------used------------");
+      console.log(used);
+      console.log("------------used------------");
+      // console.log(strength);
+
+      // hands
+      // 10通り Combination 5/3 =10
+      let combination_hands = [];
+      let num_strong = 0;
+      // your hand
+      combination_hands = combinationComCards(
+        hole_cards,
+        com_cards,
+        num_players,
+        0
+      );
+      [strength, num_strong] = selfJudge(
+        combination_hands,
+        num_strong,
+        strength,
+        0
+      );
+      player_strength.push(strength);
+      player_num_strong.push(num_strong);
+
+      // rival hand
+      combination_hands = combinationComCards(
+        hole_cards,
+        com_cards,
+        num_players,
+        1
+      );
+      [strength, num_strong] = selfJudge(
+        combination_hands,
+        num_strong,
+        strength,
+        1
+      );
+      player_strength.push(strength);
+      player_num_strong.push(num_strong);
+
+      let result;
+      result = vsJudge(player_strength);
+      console.log(player_num_strong[0]);
+      console.log(player_num_strong[1]);
+      console.log(result);
+
+      return [
+        cpu_card,
+        com_cards,
+        vis_card,
+        player_strength,
+        result,
+        player_num_strong,
+      ];
+    }
+
+    // 組み合わせ生成アルゴリズム：ダステンフェルド法（FY法の改良版）
+    function durstenfeld(used, max_num_cards, num_cards) {
+      used = [];
+      let array = [];
+      for (let i = 0; i < max_num_cards; i++) {
+        array.push(i);
+      }
+      for (let j = 0; j < num_cards; j++) {
+        let index_card = Math.ceil(Math.random() * (max_num_cards - j)) - 1;
+        used.push(array[index_card]);
+        array.splice(index_card, 1);
+      }
+      return used;
+    }
+
+    function getCard(index) {
+      let mark = index % 4;
+      let number = index % 13;
+      let card = [mark, number];
+      return card;
+    }
+
+    function getHoleCards(hole_cards, num_players, used) {
+      for (let i = 0; i < num_players; i++) {
+        let tmp_1 = getCard(used[i * 2]);
+        let tmp_2 = getCard(used[i * 2 + 1]);
+        hole_cards.push(tmp_1);
+        hole_cards.push(tmp_2);
+      }
+      return hole_cards;
+    }
+
+    function getComCards(com_cards, num_cards, num_players, used) {
+      for (let i = 0; i < num_cards - num_players * 2; i++) {
+        com_cards.push(getCard(used[i + num_players * 2]));
+      }
+      return com_cards;
+    }
+
+    //
+    function solvePossibility() {}
 
     function moveUseCard(pattern, player) {
       let pattern_strong = pattern[player_num_strong[player]];
