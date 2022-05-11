@@ -135,7 +135,7 @@
               </ul>
             </div>
             <div>
-              <input type="button" value="Reset" id="reset-chart-btn">
+              <input type="button" value="Reset" id="reset-chart-btn" />
             </div>
           </div>
         </div>
@@ -178,8 +178,10 @@
       }
     });
 
-    $("#reset-chart-btn").on("click", function(){
-      localStorage.clear();
+    $("#reset-chart-btn").on("click", function () {
+      localStorage.removeItem("TexasHoldEm");
+      initializeChart();
+      reloadChart();
     });
 
     function main() {
@@ -559,61 +561,67 @@
 
     function rewriteChart(hit_key) {
       let key_name = "#" + hit_key;
-      $(key_name).html(localStorage.getItem(hit_key));
+      const json_chart = JSON.parse(localStorage.getItem("TexasHoldEm"));
+      $(key_name).html(json_chart[hit_key]);
     }
 
     function initializeChart() {
-      if (!localStorage.getItem("SF_player1")) {
-        localStorage.setItem("SF_player1", 0);
-        localStorage.setItem("SF_player1", 0);
-        localStorage.setItem("FK_player1", 0);
-        localStorage.setItem("FH_player1", 0);
-        localStorage.setItem("FL_player1", 0);
-        localStorage.setItem("SR_player1", 0);
-        localStorage.setItem("TK_player1", 0);
-        localStorage.setItem("TP_player1", 0);
-        localStorage.setItem("OP_player1", 0);
-
-        localStorage.setItem("SF_player2", 0);
-        localStorage.setItem("FK_player2", 0);
-        localStorage.setItem("FH_player2", 0);
-        localStorage.setItem("FL_player2", 0);
-        localStorage.setItem("SR_player2", 0);
-        localStorage.setItem("TK_player2", 0);
-        localStorage.setItem("TP_player2", 0);
-        localStorage.setItem("OP_player2", 0);
+      if (!localStorage.getItem("TexasHoldEm")) {
+        const json_chart = {
+          SF_player1: 0,
+          SF_player1: 0,
+          FK_player1: 0,
+          FH_player1: 0,
+          FL_player1: 0,
+          SR_player1: 0,
+          TK_player1: 0,
+          TP_player1: 0,
+          OP_player1: 0,
+          SF_player2: 0,
+          FK_player2: 0,
+          FH_player2: 0,
+          FL_player2: 0,
+          SR_player2: 0,
+          TK_player2: 0,
+          TP_player2: 0,
+          OP_player2: 0,
+        };
+        const jsonString = JSON.stringify(json_chart);
+        localStorage.setItem("TexasHoldEm", jsonString);
       }
     }
 
     function reloadChart() {
-      $("#SF_player1").html(localStorage.getItem("SF_player1"));
-      $("#FK_player1").html(localStorage.getItem("FK_player1"));
-      $("#FH_player1").html(localStorage.getItem("FH_player1"));
-      $("#FL_player1").html(localStorage.getItem("FL_player1"));
-      $("#SR_player1").html(localStorage.getItem("SR_player1"));
-      $("#TK_player1").html(localStorage.getItem("TK_player1"));
-      $("#TP_player1").html(localStorage.getItem("TP_player1"));
-      $("#OP_player1").html(localStorage.getItem("OP_player1"));
+      const json_chart = JSON.parse(localStorage.getItem("TexasHoldEm"));
+      $("#SF_player1").html(json_chart["SF_player1"]);
+      $("#FK_player1").html(json_chart["FK_player1"]);
+      $("#FH_player1").html(json_chart["FH_player1"]);
+      $("#FL_player1").html(json_chart["FL_player1"]);
+      $("#SR_player1").html(json_chart["SR_player1"]);
+      $("#TK_player1").html(json_chart["TK_player1"]);
+      $("#TP_player1").html(json_chart["TP_player1"]);
+      $("#OP_player1").html(json_chart["OP_player1"]);
 
-      $("#SF_player2").html(localStorage.getItem("SF_player2"));
-      $("#FK_player2").html(localStorage.getItem("FK_player2"));
-      $("#FH_player2").html(localStorage.getItem("FH_player2"));
-      $("#FL_player2").html(localStorage.getItem("FL_player2"));
-      $("#SR_player2").html(localStorage.getItem("SR_player2"));
-      $("#TK_player2").html(localStorage.getItem("TK_player2"));
-      $("#TP_player2").html(localStorage.getItem("TP_player2"));
-      $("#OP_player2").html(localStorage.getItem("OP_player2"));
+      $("#SF_player2").html(json_chart["SF_player2"]);
+      $("#FK_player2").html(json_chart["FK_player2"]);
+      $("#FH_player2").html(json_chart["FH_player2"]);
+      $("#FL_player2").html(json_chart["FL_player2"]);
+      $("#SR_player2").html(json_chart["SR_player2"]);
+      $("#TK_player2").html(json_chart["TK_player2"]);
+      $("#TP_player2").html(json_chart["TP_player2"]);
+      $("#OP_player2").html(json_chart["OP_player2"]);
     }
 
     function plusOneOnLocalstorage(hit_key) {
-      if (localStorage.getItem(hit_key) == null) {
-        localStorage.setItem(hit_key, 1);
+      const json_chart = JSON.parse(localStorage.getItem("TexasHoldEm"));
+      if (json_chart[hit_key] == null) {
+        json_chart[hit_key] = 1;
       } else {
-        localStorage.setItem(
-          hit_key,
-          Number(localStorage.getItem(hit_key)) + 1
-        );
+        json_chart[hit_key]++;
       }
+      // setItem
+      const jsonString = JSON.stringify(json_chart);
+      localStorage.setItem("TexasHoldEm", jsonString);
     }
 
     // 組み合わせ生成アルゴリズム：ダステンフェルド法（FY法の改良版）
