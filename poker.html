@@ -101,6 +101,7 @@
             </div>
             <div id="chart_block">
               <ul id="chart_list">
+                <li class="strength chart_list_title">役一覧</li>
                 <li class="strength" id="SF">Straight Flush</li>
                 <li class="strength" id="FK">Four-of-a-Kind</li>
                 <li class="strength" id="FH">Full House</li>
@@ -110,6 +111,31 @@
                 <li class="strength" id="TP">Two-Pair</li>
                 <li class="strength" id="OP">One-Pair</li>
               </ul>
+              <ul id="your_history">
+                <li class="history chart_list_title">You</li>
+                <li class="history" id="SF_player1"></li>
+                <li class="history" id="FK_player1"></li>
+                <li class="history" id="FH_player1"></li>
+                <li class="history" id="FL_player1"></li>
+                <li class="history" id="SR_player1"></li>
+                <li class="history" id="TK_player1"></li>
+                <li class="history" id="TP_player1"></li>
+                <li class="history" id="OP_player1"></li>
+              </ul>
+              <ul id="cpu_history">
+                <li class="history chart_list_title">Rival</li>
+                <li class="history" id="SF_player2"></li>
+                <li class="history" id="FK_player2"></li>
+                <li class="history" id="FH_player2"></li>
+                <li class="history" id="FL_player2"></li>
+                <li class="history" id="SR_player2"></li>
+                <li class="history" id="TK_player2"></li>
+                <li class="history" id="TP_player2"></li>
+                <li class="history" id="OP_player2"></li>
+              </ul>
+            </div>
+            <div>
+              <input type="button" value="Reset" id="reset-chart-btn">
             </div>
           </div>
         </div>
@@ -150,6 +176,10 @@
         $("#chart_block").removeClass("chart-btn_open");
         $("#chart-btn").attr("value", "Close");
       }
+    });
+
+    $("#reset-chart-btn").on("click", function(){
+      localStorage.clear();
     });
 
     function main() {
@@ -303,6 +333,8 @@
             let pattern = showStrongPattern(player_num_strong[result]);
             moveUseCard(pattern, result);
             $("#call>button").attr("onclick", "window.location.reload();");
+
+            saveLocalstorage(player_strength, result);
           }, 1000);
 
           for (let i = 0; i < player_strength.length; i++) {
@@ -313,6 +345,8 @@
     }
 
     function initialize(num_players) {
+      initializeChart();
+      reloadChart();
       let card = [];
       let hole_cards = [];
       // let cof = true;
@@ -410,6 +444,176 @@
         result,
         player_num_strong,
       ];
+    }
+
+    function saveLocalstorage(player_strength, result) {
+      let hit_key;
+      let key_name;
+      switch (result) {
+        case 0:
+          break;
+        case 1:
+          break;
+        default:
+          break;
+      }
+      switch (player_strength[0][0]) {
+        case 0:
+          hit_key = "HC_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 1:
+          hit_key = "OP_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 2:
+          hit_key = "TP_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 3:
+          hit_key = "TK_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 4:
+          hit_key = "SR_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 5:
+          hit_key = "FL_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 6:
+          hit_key = "FH_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 7:
+          hit_key = "FK_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 8:
+          hit_key = "SF_player1";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        default:
+          break;
+      }
+      switch (player_strength[1][0]) {
+        case 0:
+          hit_key = "HC_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 1:
+          hit_key = "OP_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 2:
+          hit_key = "TP_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 3:
+          hit_key = "TK_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 4:
+          hit_key = "SR_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 5:
+          hit_key = "FL_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 6:
+          hit_key = "FH_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 7:
+          hit_key = "FK_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        case 8:
+          hit_key = "SF_player2";
+          plusOneOnLocalstorage(hit_key);
+          rewriteChart(hit_key);
+          break;
+        default:
+          break;
+      }
+    }
+
+    function rewriteChart(hit_key) {
+      let key_name = "#" + hit_key;
+      $(key_name).html(localStorage.getItem(hit_key));
+    }
+
+    function initializeChart() {
+      if (!localStorage.getItem("SF_player1")) {
+        localStorage.setItem("SF_player1", 0);
+        localStorage.setItem("SF_player1", 0);
+        localStorage.setItem("FK_player1", 0);
+        localStorage.setItem("FH_player1", 0);
+        localStorage.setItem("FL_player1", 0);
+        localStorage.setItem("SR_player1", 0);
+        localStorage.setItem("TK_player1", 0);
+        localStorage.setItem("TP_player1", 0);
+        localStorage.setItem("OP_player1", 0);
+
+        localStorage.setItem("SF_player2", 0);
+        localStorage.setItem("FK_player2", 0);
+        localStorage.setItem("FH_player2", 0);
+        localStorage.setItem("FL_player2", 0);
+        localStorage.setItem("SR_player2", 0);
+        localStorage.setItem("TK_player2", 0);
+        localStorage.setItem("TP_player2", 0);
+        localStorage.setItem("OP_player2", 0);
+      }
+    }
+
+    function reloadChart() {
+      $("#SF_player1").html(localStorage.getItem("SF_player1"));
+      $("#FK_player1").html(localStorage.getItem("FK_player1"));
+      $("#FH_player1").html(localStorage.getItem("FH_player1"));
+      $("#FL_player1").html(localStorage.getItem("FL_player1"));
+      $("#SR_player1").html(localStorage.getItem("SR_player1"));
+      $("#TK_player1").html(localStorage.getItem("TK_player1"));
+      $("#TP_player1").html(localStorage.getItem("TP_player1"));
+      $("#OP_player1").html(localStorage.getItem("OP_player1"));
+
+      $("#SF_player2").html(localStorage.getItem("SF_player2"));
+      $("#FK_player2").html(localStorage.getItem("FK_player2"));
+      $("#FH_player2").html(localStorage.getItem("FH_player2"));
+      $("#FL_player2").html(localStorage.getItem("FL_player2"));
+      $("#SR_player2").html(localStorage.getItem("SR_player2"));
+      $("#TK_player2").html(localStorage.getItem("TK_player2"));
+      $("#TP_player2").html(localStorage.getItem("TP_player2"));
+      $("#OP_player2").html(localStorage.getItem("OP_player2"));
+    }
+
+    function plusOneOnLocalstorage(hit_key) {
+      if (localStorage.getItem(hit_key) == null) {
+        localStorage.setItem(hit_key, 1);
+      } else {
+        localStorage.setItem(
+          hit_key,
+          Number(localStorage.getItem(hit_key)) + 1
+        );
+      }
     }
 
     // 組み合わせ生成アルゴリズム：ダステンフェルド法（FY法の改良版）

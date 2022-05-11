@@ -124,13 +124,22 @@ button:hover {
   align-items: center;
 }
 
-#chart_list {
+#chart_block {
+  display: flex;
+  justify-content: center;
+}
+
+#chart_list,
+#your_history,
+#cpu_history {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-#chart_list > li {
+#chart_list > li,
+#your_history > li,
+#cpu_history > li {
   line-height: 1.5;
   padding: 0.3em 0;
   margin-top: 1px;
@@ -139,10 +148,25 @@ button:hover {
   font-size: 16px;
   font-weight: bold;
   float: right;
-  width: 100%;
   text-align: center;
   border: solid black 0.5px;
   border-radius: 20px;
+}
+
+#chart_list > li {
+  width: 100%;
+}
+
+#your_history > li,
+#cpu_history > li {
+  width: 100%;
+}
+
+#chart_block .chart_list_title {
+  background-color: transparent;
+  color: black;
+  border: 0;
+  border-radius: 0;
 }
 
 #indicator {
