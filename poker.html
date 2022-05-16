@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/style.css" />
     <script src="./js/jquery-2.1.3.min.js"></script>
+    <script src="./js/judgement.js"></script>
     <title>TH</title>
   </head>
   <body>
@@ -13,22 +14,22 @@
       <div id="header"><span>ヘッダー</span></div>
     </header>
     <div id="container">
-      <div id="player2" class="player">
+      <div id="cpu" class="player">
         <div class="hand">
-          <div class="card card_player2 card_player2_1">
+          <div class="card card_cpu card_cpu_1">
             <div class="card_front">
-              <img src="./img/cards/back.png" alt="" class="player2_img_1" />
+              <img src="./img/cards/back.png" alt="" class="cpu_img_1" />
             </div>
             <div class="card_back">
-              <img src="" alt class="player2_img_1" />
+              <img src="" alt class="cpu_img_1" />
             </div>
           </div>
-          <div class="card card_player2 card_player2_2">
+          <div class="card card_cpu card_cpu_2">
             <div class="card_front">
-              <img src="./img/cards/back.png" alt="" class="player2_img_2" />
+              <img src="./img/cards/back.png" alt="" class="cpu_img_2" />
             </div>
             <div class="card_back">
-              <img src="" alt class="player2_img_2" />
+              <img src="" alt class="cpu_img_2" />
             </div>
           </div>
         </div>
@@ -77,24 +78,8 @@
           </div>
         </div>
       </div>
-      <div id="player1" class="player">
+      <div id="you" class="player">
         <div class="hand">
-          <div class="card card_player1_1">
-            <div class="card_front">
-              <img src="./img/cards/back.png" alt="" class="player1_img_1" />
-            </div>
-            <div class="card_back">
-              <img src="" alt="" class="player1_img_1" />
-            </div>
-          </div>
-          <div class="card card_player1_2">
-            <div class="card_front">
-              <img src="./img/cards/back.png" alt="" class="player1_img_2" />
-            </div>
-            <div class="card_back">
-              <img src="" alt="" class="player1_img_2" />
-            </div>
-          </div>
           <div id="chart">
             <div>
               <input type="button" value="Close" id="chart-btn" />
@@ -113,29 +98,58 @@
               </ul>
               <ul id="your_history">
                 <li class="history chart_list_title">You</li>
-                <li class="history" id="SF_player1"></li>
-                <li class="history" id="FK_player1"></li>
-                <li class="history" id="FH_player1"></li>
-                <li class="history" id="FL_player1"></li>
-                <li class="history" id="SR_player1"></li>
-                <li class="history" id="TK_player1"></li>
-                <li class="history" id="TP_player1"></li>
-                <li class="history" id="OP_player1"></li>
+                <li class="history" id="SF_you"></li>
+                <li class="history" id="FK_you"></li>
+                <li class="history" id="FH_you"></li>
+                <li class="history" id="FL_you"></li>
+                <li class="history" id="SR_you"></li>
+                <li class="history" id="TK_you"></li>
+                <li class="history" id="TP_you"></li>
+                <li class="history" id="OP_you"></li>
               </ul>
               <ul id="cpu_history">
                 <li class="history chart_list_title">Rival</li>
-                <li class="history" id="SF_player2"></li>
-                <li class="history" id="FK_player2"></li>
-                <li class="history" id="FH_player2"></li>
-                <li class="history" id="FL_player2"></li>
-                <li class="history" id="SR_player2"></li>
-                <li class="history" id="TK_player2"></li>
-                <li class="history" id="TP_player2"></li>
-                <li class="history" id="OP_player2"></li>
+                <li class="history" id="SF_cpu"></li>
+                <li class="history" id="FK_cpu"></li>
+                <li class="history" id="FH_cpu"></li>
+                <li class="history" id="FL_cpu"></li>
+                <li class="history" id="SR_cpu"></li>
+                <li class="history" id="TK_cpu"></li>
+                <li class="history" id="TP_cpu"></li>
+                <li class="history" id="OP_cpu"></li>
               </ul>
             </div>
             <div>
-              <input type="button" value="Reset" id="reset-chart-btn" />
+              <input
+                type="button"
+                value="Reset"
+                id="reset-chart-btn"
+                onclick="window.location.reload();"
+              />
+            </div>
+          </div>
+          <div class="card card_you_1">
+            <div class="card_front">
+              <img src="./img/cards/back.png" alt="" class="you_img_1" />
+            </div>
+            <div class="card_back">
+              <img src="" alt="" class="you_img_1" />
+            </div>
+          </div>
+          <div class="card card_you_2">
+            <div class="card_front">
+              <img src="./img/cards/back.png" alt="" class="you_img_2" />
+            </div>
+            <div class="card_back">
+              <img src="" alt="" class="you_img_2" />
+            </div>
+          </div>
+          <div id="chat">
+            <div>
+              <div id="output" style="overflow: auto; height: 300px"></div>
+              <div>
+                <input id="text" value="メッセージを入力してください"></input>
+              </div>
             </div>
           </div>
         </div>
@@ -164,59 +178,252 @@
       </div>
     </div>
   </body>
-  <script>
-    main();
+  <script type="module">
+    //
+    // sessionStorageから情報取得
+    //
+    let ss_th_number = JSON.parse(sessionStorage.getItem("TH_number"));
+    console.log(ss_th_number);
 
-    $("#chart-btn").on("click", function () {
-      $("#chart_block").slideToggle();
-      if ($("#chart_block").hasClass("chart-btn_open") == false) {
-        $("#chart_block").addClass("chart-btn_open");
-        $("#chart-btn").attr("value", "Open");
-      } else {
-        $("#chart_block").removeClass("chart-btn_open");
-        $("#chart-btn").attr("value", "Close");
+    //
+    // グローバル変数定義
+    //
+    // sessionStorageからテーブル番号取得
+    let table_id = ss_th_number.table_id;
+    // sessionStorageからユーザー番号取得
+    let user_id = ss_th_number.order_player;
+    // sessionStorageからユーザー数取得（最大値）
+    let num_players = ss_th_number.max_player;
+    let cpu_id;
+    for (let i = 0; i < num_players; i++) {
+      if (i != user_id) {
+        cpu_id = i;
       }
-    });
+    }
 
-    $("#reset-chart-btn").on("click", function () {
-      localStorage.removeItem("TexasHoldEm");
-      initializeChart();
-      reloadChart();
-    });
+    let card;
+    let hole_cards;
+    let com_cards;
+    let strength;
+    let player_strength;
+    let result;
+    let player_num_strong;
+    let com_card1;
+    let com_card2;
+    let com_card3;
+    let com_card4;
+    let com_card5;
+    let vis_card;
+    let cpu_card;
 
-    function main() {
-      [
-        cpu_card,
-        com_cards,
-        vis_card,
-        player_strength,
-        result,
-        player_num_strong,
-      ] = initialize();
-      let com_card1 = com_cards[0];
-      let com_card2 = com_cards[1];
-      let com_card3 = com_cards[2];
-      let com_card4 = com_cards[3];
-      let com_card5 = com_cards[4];
+    //
+    // Firebase定義
+    //
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onChildAdded,
+      remove,
+      onChildRemoved,
+      onChildChanged,
+    } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJTAoocmRo7J8yBmuFS17pFl4JirW4jNs",
+      authDomain: "texasholdem-afd55.firebaseapp.com",
+      projectId: "texasholdem-afd55",
+      storageBucket: "texasholdem-afd55.appspot.com",
+      messagingSenderId: "326627407513",
+      appId: "1:326627407513:web:070aac25625a093a066a08",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const parent_dbRef = ref(db, "texasholdem/table" + table_id);
+    const tb_dbRef = ref(db, "texasholdem/table" + table_id + "/table");
+    const ch_dbRef = ref(db, "texasholdem/table" + table_id + "/chat");
+
+    //
+    //
+    main(table_id, user_id, num_players);
+
+    // $("#chart-btn").on("click", function () {
+    //   $("#chart_block").slideToggle();
+    //   if ($("#chart_block").hasClass("chart-btn_open") == false) {
+    //     $("#chart_block").addClass("chart-btn_open");
+    //     $("#chart-btn").attr("value", "Open");
+    //   } else {
+    //     $("#chart_block").removeClass("chart-btn_open");
+    //     $("#chart-btn").attr("value", "Close");
+    //   }
+    // });
+
+    // $("#reset-chart-btn").on("click", function () {
+    //   localStorage.removeItem("TexasHoldEm");
+    //   initializeChart();
+    //   reloadChart();
+    // });
+
+    async function main(table_id, user_id, num_players) {
+      let table = {
+        phase: 0,
+        table_id: table_id,
+        num_player: num_players,
+        hole_cards: [],
+        com_cards: [],
+        strength: [],
+        pattern: [],
+        result: [],
+      };
+      let flg_dealer;
+      if (user_id % num_players == 0) {
+        flg_dealer = true;
+      }
+      if (flg_dealer == true) {
+        [
+          card,
+          hole_cards,
+          com_cards,
+          player_strength,
+          result,
+          player_num_strong,
+        ] = initialize(num_players);
+        // ここで全データを保存
+        // 以降のデータ形式をdbのものに調整
+        table.hole_cards = hole_cards;
+        table.com_cards = com_cards;
+        table.strength = player_strength;
+        table.pattern = showStrongPattern(player_num_strong[result]);
+        table.result = result;
+        await set(tb_dbRef, table);
+      }
+
+      // 以降ではユーザーごとに表示を判定
+      //フェーズのフラグ（*num_players）
+      // $("#call>button").on("click", function () {
+      //   // phase進行
+      // });
+
+      // onChildAdded(tb_dbRef, function (data) {
+      //   table = data.val();
+      //   if (table.phase == 0 && flg_dealer % num_players == 0) {
+      //     // 親の処理実行
+      //   }
+      // });
+      // onChildAdded(tb_dbRef, function (data) {
+      //   table = data.val();
+      //   if (table.phase == 0 && flg_dealer % num_players != 0) {
+      //     // 子の処理実行
+      //   }
+      // });
+      // onChildAdded(tb_dbRef, function (data) {
+      //   table = data.val();
+      //   if (table.phase == 0) {
+      //     // 共通処理
+      //   }
+      // });
+
+      // game start
       $("#call>button").on("click", function () {
-        if ($(this).hasClass("step1") == true) {
-          $(".player1_img_1").css("display", "none");
-          $(".player1_img_1").slideDown(500, function () {});
-          $(".player1_img_2").css("display", "none");
-          $(".player1_img_2").slideDown(500, function () {});
-          $(".card_player2>.card_back>.player2_img_1").attr(
+        console.log("click");
+        if (table.phase == 0 && user_id % num_players == 0) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:1
+          set(tb_dbRef, table);
+        } else if (table.phase == 1 && user_id % num_players == 0) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:2
+          set(tb_dbRef, table);
+        } else if (table.phase == 2 && user_id % num_players == 1) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:3
+          set(tb_dbRef, table);
+        } else if (table.phase == 3 && user_id % num_players == 0) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:4
+          set(tb_dbRef, table);
+        } else if (table.phase == 4 && user_id % num_players == 1) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:5
+          set(tb_dbRef, table);
+        } else if (table.phase == 5 && user_id % num_players == 0) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:6
+          set(tb_dbRef, table);
+        } else if (table.phase == 6 && user_id % num_players == 1) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:7
+          set(tb_dbRef, table);
+        } else if (table.phase == 7 && user_id % num_players == 0) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:8
+          set(tb_dbRef, table);
+        } else if (table.phase == 8 && user_id % num_players == 1) {
+          console.log("phase: " + table.phase);
+          console.log("phase proceeded");
+          table.phase++; // phase:9
+          set(tb_dbRef, table);
+        } else if (table.phase == 9) {
+          table.phase = -1; // phase:9
+          set(tb_dbRef, table);
+        }
+      });
+      onChildChanged(parent_dbRef, function (data) {
+        table = data.val();
+        console.log("data changed");
+        if (table.phase == 1) {
+          // TODO: 人数増えた場合、修正の必要あり
+
+          com_card1 = table.com_cards[0];
+          com_card2 = table.com_cards[1];
+          com_card3 = table.com_cards[2];
+          com_card4 = table.com_cards[3];
+          com_card5 = table.com_cards[4];
+
+          for (let i = 0; i < num_players; i++) {
+            if (i == user_id) {
+              vis_card = table.hole_cards.slice(i * 2, i * 2 + 2);
+            } else {
+              // TODO: 人数増えた場合、修正の必要あり
+              cpu_card = table.hole_cards.slice(i * 2, i * 2 + 2);
+            }
+          }
+          // prefrop
+          // 共通処理
+          $(".you_img_1").css("display", "none");
+          $(".you_img_1").slideDown(500, function () {});
+          $(".you_img_2").css("display", "none");
+          $(".you_img_2").slideDown(500, function () {});
+
+          $(".card_cpu>.card_back>.cpu_img_1").attr(
             "src",
             "./img/cards/" + visualiseCard(cpu_card[0])
           );
-          $(".card_player2>.card_back>.player2_img_2").attr(
+          $(".card_cpu>.card_back>.cpu_img_2").attr(
             "src",
             "./img/cards/" + visualiseCard(cpu_card[1])
           );
+          $(".cpu_img_1").css("display", "none");
+          $(".cpu_img_1").slideDown(500, function () {});
+          $(".cpu_img_2").css("display", "none");
+          $(".cpu_img_2").slideDown(500, function () {});
 
-          $(".player2_img_1").css("display", "none");
-          $(".player2_img_1").slideDown(500, function () {});
-          $(".player2_img_2").css("display", "none");
-          $(".player2_img_2").slideDown(500, function () {});
           setTimeout(function () {
             $(".card_frop>.card_back>.com_img_1").attr(
               "src",
@@ -230,31 +437,24 @@
               "src",
               "./img/cards/" + visualiseCard(com_card3)
             );
-            $(".card_back>.player1_img_1").attr(
+
+            $(".card_back>.you_img_1").attr(
               "src",
               "./img/cards/" + visualiseCard(vis_card[0])
             );
-
-            $(".card_back>.player1_img_2").attr(
+            $(".card_back>.you_img_2").attr(
               "src",
               "./img/cards/" + visualiseCard(vis_card[1])
             );
-            $(".card_player1_1>.card_back").css("transform", "rotateY(0)");
-            $(".card_player1_2>.card_back").css("transform", "rotateY(0)");
-            $(".card_player1_1>.card_front").css(
-              "transform",
-              "rotateY(-180deg)"
-            );
-            $(".card_player1_2>.card_front").css(
-              "transform",
-              "rotateY(-180deg)"
-            );
+
+            $(".card_you_1>.card_back").css("transform", "rotateY(0)");
+            $(".card_you_2>.card_back").css("transform", "rotateY(0)");
+            $(".card_you_1>.card_front").css("transform", "rotateY(-180deg)");
+            $(".card_you_2>.card_front").css("transform", "rotateY(-180deg)");
             solvePossibility();
           }, 1000);
-
-          $(this).addClass("step2");
-          $(this).removeClass("step1");
-        } else if ($(this).hasClass("step2") == true) {
+        } else if (table.phase == 3) {
+          // frop
           $(".com_img_1").slideDown(500, function () {});
           $(".com_img_2").slideDown(500, function () {});
           $(".com_img_3").slideDown(500, function () {});
@@ -275,9 +475,8 @@
             $(".card_frop>.card_front").css("transform", "rotateY(-180deg)");
             solvePossibility();
           }, 1000);
-          $(this).addClass("step3");
-          $(this).removeClass("step2");
-        } else if ($(this).hasClass("step3") == true) {
+        } else if (table.phase == 5) {
+          // turn
           $(".com_img_4").slideDown(500, function () {});
           setTimeout(function () {
             $(".card_turn>.card_back>.com_img_4").attr(
@@ -288,9 +487,8 @@
             $(".card_turn>.card_front").css("transform", "rotateY(-180deg)");
             solvePossibility();
           }, 1000);
-          $(this).addClass("step4");
-          $(this).removeClass("step3");
-        } else if ($(this).hasClass("step4") == true) {
+        } else if (table.phase == 7) {
+          // river
           $(".com_img_5").slideDown(500, function () {});
           setTimeout(function () {
             $(".card_river>.card_back>.com_img_5").attr(
@@ -301,17 +499,15 @@
             $(".card_river>.card_front").css("transform", "rotateY(-180deg)");
             solvePossibility();
           }, 1000);
-          $(this).addClass("step5");
-          $(this).removeClass("step4");
-        } else if ($(this).hasClass("step5") == true) {
-          $(this).removeClass("step5");
-          $(".card_player2>.card_back").css("transform", "rotateY(0)");
-          $(".card_player2>.card_front").css("transform", "rotateY(-180deg)");
+        } else if (table.phase == 9) {
+          // result
+          $(".card_cpu>.card_back").css("transform", "rotateY(0)");
+          $(".card_cpu>.card_front").css("transform", "rotateY(-180deg)");
           setTimeout(function () {
-            $("#your_result").html(player_strength[0][3]);
+            $("#your_result").html(table.strength[user_id][3]);
             $("#show_vs").html("vs");
-            $("#rival_result").html(player_strength[1][3]);
-            if (result == 0) {
+            $("#rival_result").html(table.strength[cpu_id][3]);
+            if (table.result == user_id) {
               $("#win_lose").html("YOU WIN");
               $("#win_lose").css("color", "red");
               $("#win_lose").css("font-size", "20px");
@@ -319,7 +515,7 @@
               $("#your_result").css("color", "red");
               $("#your_result").css("font-size", "20px");
               $("#your_result").css("font-weight", "bold");
-            } else if (result == -1) {
+            } else if (table.result == -1) {
               $("#win_lose").html("EVEN");
             } else {
               $("#win_lose").html("YOU LOSE");
@@ -330,18 +526,16 @@
               $("#rival_result").css("font-size", "20px");
               $("#rival_result").css("font-weight", "bold");
             }
-            let blink_id = "#" + blinkResult(result, player_strength);
+            let blink_id =
+              "#" + blinkResult(table.result, table.strength);
             $(blink_id).addClass("blink_result");
-            let pattern = showStrongPattern(player_num_strong[result]);
-            moveUseCard(pattern, result);
+            moveUseCard(table.pattern, table.result);
             $("#call>button").attr("onclick", "window.location.reload();");
 
-            saveLocalstorage(player_strength, result);
+            saveLocalstorage(table.strength, table.result);
           }, 1000);
-
-          for (let i = 0; i < player_strength.length; i++) {
-            console.log(player_strength[i]);
-          }
+        } else if (table.phase == -1) {
+          window.location.reload();
         }
       });
     }
@@ -357,8 +551,7 @@
       // pregame
       // カード配る
       // 乱数
-      num_players = 2; //1on1
-      let num_cards = 5 + num_players * 2;
+      let num_cards = num_players * 2 + 5;
       const max_num_cards = 52;
 
       let used = [];
@@ -373,75 +566,47 @@
       hole_cards = getHoleCards(hole_cards, num_players, used);
       com_cards = getComCards(com_cards, num_cards, num_players, used);
 
-      // prefrop
-      // TODO: 人数増えた場合、修正の必要あり
-      let vis_card = hole_cards.slice(0, 2);
-      let cpu_card = hole_cards.slice(2, 4);
+      // console.log(hole_cards);
+      // console.log(com_cards);
 
-      // frop
-      // 3枚配る
-
-      console.log(com_cards);
-      // ベットアクション（コールorフォールド）
-      // turn
-      // 1枚配る
-      // ベットアクション（コールorフォールド）
-      // river
-      // 1枚配る
-
-      // ベットアクション（コールorフォールド）
-
-      console.log("------------used------------");
-      console.log(used);
-      console.log("------------used------------");
-      // console.log(strength);
+      card = card.concat(hole_cards);
+      card = card.concat(com_cards);
+      // console.log("card");
+      // console.log(card);
 
       // hands
       // 10通り Combination 5/3 =10
       let combination_hands = [];
       let num_strong = 0;
       // your hand
-      combination_hands = combinationComCards(
-        hole_cards,
-        com_cards,
-        num_players,
-        0
-      );
-      [strength, num_strong] = selfJudge(
-        combination_hands,
-        num_strong,
-        strength,
-        0
-      );
-      player_strength.push(strength);
-      player_num_strong.push(num_strong);
+      for (let i = 0; i < num_players; i++) {
+        combination_hands = combinationComCards(
+          hole_cards,
+          com_cards,
+          num_players,
+          i
+        );
+        [strength, num_strong] = selfJudge(
+          combination_hands,
+          num_strong,
+          strength,
+          i
+        );
+        player_strength.push(strength);
+        player_num_strong.push(num_strong);
+      }
 
-      // rival hand
-      combination_hands = combinationComCards(
-        hole_cards,
-        com_cards,
-        num_players,
-        1
-      );
-      [strength, num_strong] = selfJudge(
-        combination_hands,
-        num_strong,
-        strength,
-        1
-      );
-      player_strength.push(strength);
-      player_num_strong.push(num_strong);
-
+      // 2名以上になる場合注意
       let result;
-      result = vsJudge(player_strength);
-      console.log(player_num_strong[0]);
-      console.log(player_num_strong[1]);
-      console.log(result);
+      result = vsJudge(player_strength, 0, 1);
+      // console.log(player_num_strong[0]);
+      // console.log(player_num_strong[1]);
+      // console.log(result);
 
       return [
-        cpu_card,
+        card,
+        hole_cards,
         com_cards,
-        vis_card,
         player_strength,
         result,
         player_num_strong,
@@ -461,47 +626,47 @@
       }
       switch (player_strength[0][0]) {
         case 0:
-          hit_key = "HC_player1";
+          hit_key = "HC_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 1:
-          hit_key = "OP_player1";
+          hit_key = "OP_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 2:
-          hit_key = "TP_player1";
+          hit_key = "TP_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 3:
-          hit_key = "TK_player1";
+          hit_key = "TK_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 4:
-          hit_key = "SR_player1";
+          hit_key = "SR_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 5:
-          hit_key = "FL_player1";
+          hit_key = "FL_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 6:
-          hit_key = "FH_player1";
+          hit_key = "FH_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 7:
-          hit_key = "FK_player1";
+          hit_key = "FK_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 8:
-          hit_key = "SF_player1";
+          hit_key = "SF_you";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
@@ -510,47 +675,47 @@
       }
       switch (player_strength[1][0]) {
         case 0:
-          hit_key = "HC_player2";
+          hit_key = "HC_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 1:
-          hit_key = "OP_player2";
+          hit_key = "OP_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 2:
-          hit_key = "TP_player2";
+          hit_key = "TP_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 3:
-          hit_key = "TK_player2";
+          hit_key = "TK_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 4:
-          hit_key = "SR_player2";
+          hit_key = "SR_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 5:
-          hit_key = "FL_player2";
+          hit_key = "FL_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 6:
-          hit_key = "FH_player2";
+          hit_key = "FH_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 7:
-          hit_key = "FK_player2";
+          hit_key = "FK_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
         case 8:
-          hit_key = "SF_player2";
+          hit_key = "SF_cpu";
           plusOneOnLocalstorage(hit_key);
           rewriteChart(hit_key);
           break;
@@ -568,23 +733,23 @@
     function initializeChart() {
       if (!localStorage.getItem("TexasHoldEm")) {
         const json_chart = {
-          SF_player1: 0,
-          SF_player1: 0,
-          FK_player1: 0,
-          FH_player1: 0,
-          FL_player1: 0,
-          SR_player1: 0,
-          TK_player1: 0,
-          TP_player1: 0,
-          OP_player1: 0,
-          SF_player2: 0,
-          FK_player2: 0,
-          FH_player2: 0,
-          FL_player2: 0,
-          SR_player2: 0,
-          TK_player2: 0,
-          TP_player2: 0,
-          OP_player2: 0,
+          SF_you: 0,
+          SF_you: 0,
+          FK_you: 0,
+          FH_you: 0,
+          FL_you: 0,
+          SR_you: 0,
+          TK_you: 0,
+          TP_you: 0,
+          OP_you: 0,
+          SF_cpu: 0,
+          FK_cpu: 0,
+          FH_cpu: 0,
+          FL_cpu: 0,
+          SR_cpu: 0,
+          TK_cpu: 0,
+          TP_cpu: 0,
+          OP_cpu: 0,
         };
         const jsonString = JSON.stringify(json_chart);
         localStorage.setItem("TexasHoldEm", jsonString);
@@ -593,23 +758,23 @@
 
     function reloadChart() {
       const json_chart = JSON.parse(localStorage.getItem("TexasHoldEm"));
-      $("#SF_player1").html(json_chart["SF_player1"]);
-      $("#FK_player1").html(json_chart["FK_player1"]);
-      $("#FH_player1").html(json_chart["FH_player1"]);
-      $("#FL_player1").html(json_chart["FL_player1"]);
-      $("#SR_player1").html(json_chart["SR_player1"]);
-      $("#TK_player1").html(json_chart["TK_player1"]);
-      $("#TP_player1").html(json_chart["TP_player1"]);
-      $("#OP_player1").html(json_chart["OP_player1"]);
+      $("#SF_you").html(json_chart["SF_you"]);
+      $("#FK_you").html(json_chart["FK_you"]);
+      $("#FH_you").html(json_chart["FH_you"]);
+      $("#FL_you").html(json_chart["FL_you"]);
+      $("#SR_you").html(json_chart["SR_you"]);
+      $("#TK_you").html(json_chart["TK_you"]);
+      $("#TP_you").html(json_chart["TP_you"]);
+      $("#OP_you").html(json_chart["OP_you"]);
 
-      $("#SF_player2").html(json_chart["SF_player2"]);
-      $("#FK_player2").html(json_chart["FK_player2"]);
-      $("#FH_player2").html(json_chart["FH_player2"]);
-      $("#FL_player2").html(json_chart["FL_player2"]);
-      $("#SR_player2").html(json_chart["SR_player2"]);
-      $("#TK_player2").html(json_chart["TK_player2"]);
-      $("#TP_player2").html(json_chart["TP_player2"]);
-      $("#OP_player2").html(json_chart["OP_player2"]);
+      $("#SF_cpu").html(json_chart["SF_cpu"]);
+      $("#FK_cpu").html(json_chart["FK_cpu"]);
+      $("#FH_cpu").html(json_chart["FH_cpu"]);
+      $("#FL_cpu").html(json_chart["FL_cpu"]);
+      $("#SR_cpu").html(json_chart["SR_cpu"]);
+      $("#TK_cpu").html(json_chart["TK_cpu"]);
+      $("#TP_cpu").html(json_chart["TP_cpu"]);
+      $("#OP_cpu").html(json_chart["OP_cpu"]);
     }
 
     function plusOneOnLocalstorage(hit_key) {
@@ -700,59 +865,59 @@
         for (let i = 0; i < pattern_strong.length; i++) {
           if (pattern_strong[i] == 0) {
             if (player == 0) {
-              $(".card_player1_1>.card_back").animate({ top: "-30px" }, 500);
-              console.log("0-0");
+              $(".card_you_1>.card_back").animate({ top: "-30px" }, 500);
+              // console.log("0-0");
             } else if (player == 1) {
-              $(".card_player2_1>.card_back").animate({ top: "30px" }, 500);
-              console.log("0-1");
+              $(".card_cpu_1>.card_back").animate({ top: "30px" }, 500);
+              // console.log("0-1");
             }
           } else if (pattern_strong[i] == 1) {
             if (player == 0) {
-              $(".card_player1_2>.card_back").animate({ top: "-30px" }, 500);
-              console.log("1-0");
+              $(".card_you_2>.card_back").animate({ top: "-30px" }, 500);
+              // console.log("1-0");
             } else if (player == 1) {
-              console.log("1-1");
-              $(".card_player2_2>.card_back").animate({ top: "30px" }, 500);
+              // console.log("1-1");
+              $(".card_cpu_2>.card_back").animate({ top: "30px" }, 500);
             }
           } else if (pattern_strong[i] == 2) {
             if (player == 0) {
-              console.log("2-0");
+              // console.log("2-0");
               $(".card_com_1>.card_back").animate({ top: "30px" }, 500);
             } else if (player == 1) {
-              console.log("2-1");
+              // console.log("2-1");
               $(".card_com_1>.card_back").animate({ top: "-30px" }, 500);
             }
           } else if (pattern_strong[i] == 3) {
             if (player == 0) {
-              console.log("3-0");
+              // console.log("3-0");
               $(".card_com_2>.card_back").animate({ top: "30px" }, 500);
             } else if (player == 1) {
-              console.log("3-1");
+              // console.log("3-1");
               $(".card_com_2>.card_back").animate({ top: "-30px" }, 500);
             }
           } else if (pattern_strong[i] == 4) {
             if (player == 0) {
-              console.log("4-0");
+              // console.log("4-0");
               $(".card_com_3>.card_back").animate({ top: "30px" }, 500);
             } else if (player == 1) {
-              console.log("4-1");
+              // console.log("4-1");
               $(".card_com_3>.card_back").animate({ top: "-30px" }, 500);
             }
           } else if (pattern_strong[i] == 5) {
             if (player == 0) {
-              console.log("5-0");
+              // console.log("5-0");
               $(".card_com_4>.card_back").animate({ top: "30px" }, 500);
             } else if (player == 1) {
-              console.log("5-1");
+              // console.log("5-1");
               $(".card_com_4>.card_back").animate({ top: "-30px" }, 500);
             }
           } else if (pattern_strong[i] == 6) {
             if (player == 0) {
-              console.log("6-0");
+              // console.log("6-0");
               $(".card_com_5>.card_back").animate({ top: "30px" }, 500);
             } else if (player == 1) {
               $(".card_com_5>.card_back").animate({ top: "-30px" }, 500);
-              console.log("6-1");
+              // console.log("6-1");
             }
           }
         }
@@ -783,11 +948,11 @@
       return name_img;
     }
 
-    function vsJudge(player_strength) {
+    function vsJudge(player_strength, player1, player2) {
       let player1_strength;
-      player1_strength = player_strength[0];
+      player1_strength = player_strength[player1];
       let player2_strength;
-      player2_strength = player_strength[1];
+      player2_strength = player_strength[player2];
       // console.log(player1_strength);
       // console.log(player2_strength);
       if (player1_strength[0] < player2_strength[0]) {
@@ -892,198 +1057,41 @@
       return ans;
     }
 
-    // functions for judgement
-    function judgeHands(hand) {
-      let strength = [-1, -1, -1];
-      let flush = -1;
-      let straight = -1;
-      let num_pair1 = -1;
-      let num_pair2 = -1;
-      let threeofakinds = -1;
-      let fourofakinds = -1;
-      let kicker = -1;
+    //
+    // チャット
+    //
 
-      flush = isFlush(hand);
-      straight = isStraight(hand);
-      [num_pair1, num_pair2, threeofakinds, fourofakinds, kicker] =
-        cntPairs(hand);
-      // straightflush
-      if (flush >= 0 && straight >= 0) {
-        strength[0] = 8;
-        strength[1] = flush;
-        strength[3] = "Straight Flush";
-        return strength;
+    //データ登録(Enter)
+    $("#text").on("keydown", function (e) {
+      console.log(e); //e変数の中身を確認！！
+      if (e.keyCode == 13) {
+        //EnterKey=13
+        const msg = {
+          uname: "user_id: " + user_id,
+          text: $("#text").val(),
+        };
+        const newPostRef = push(ch_dbRef); //ユニークKEYを生成
+        set(newPostRef, msg); //"chat"にユニークKEYをつけてオブジェクトデータを登録
       }
-      // fourofakinds
-      if (fourofakinds >= 0) {
-        strength[0] = 7;
-        strength[1] = fourofakinds;
-        strength[2] = kicker;
-        strength[3] = "Four-of-a-Kind";
-        return strength;
-      }
-      // fullhouse
-      if (threeofakinds >= 0 && num_pair1 >= 0) {
-        strength[0] = 6;
-        strength[1] = threeofakinds;
-        strength[2] = num_pair1;
-        strength[3] = "Full House";
-        return strength;
-      }
-      // flush
-      if (flush >= 0) {
-        strength[0] = 5;
-        strength[1] = flush;
-        strength[3] = "Flush";
-        return strength;
-      }
-      // straight
-      if (straight >= 0 && num_pair1 == -1 && threeofakinds == -1) {
-        strength[0] = 4;
-        strength[1] = straight;
-        strength[3] = "Straight";
-        return strength;
-      }
-      // threeofakinds
-      if (threeofakinds >= 0) {
-        strength[0] = 3;
-        strength[1] = threeofakinds;
-        strength[2] = kicker;
-        strength[3] = "Three-of-a-Kind";
-        return strength;
-      }
-      // twopairs
-      if (num_pair2 >= 0) {
-        strength[0] = 2;
-        strength[1] = num_pair2;
-        strength[2] = num_pair1;
-        strength[3] = "Two-Pair";
-        return strength;
-      }
-      // onepair
-      if (num_pair1 >= 0) {
-        strength[0] = 1;
-        strength[1] = num_pair1;
-        strength[2] = kicker;
-        strength[3] = "One-Pair";
-        return strength;
-      }
-      // highcard
-      strength[0] = 0;
-      strength[1] = kicker;
-      strength[3] = "High Card";
-      return strength;
-    }
+    });
 
-    function isFlush(hand) {
-      let flush = -1;
-      if (
-        hand[1][0] == hand[2][0] &&
-        hand[2][0] == hand[3][0] &&
-        hand[3][0] == hand[4][0] &&
-        hand[4][0] == hand[0][0]
-      ) {
-        let max = Math.max.apply(
-          null,
-          hand.map((item) => item[1])
-        );
-        let min = Math.min.apply(
-          null,
-          hand.map((item) => item[1])
-        );
-        if (min == 0) {
-          flush = 13;
-        } else {
-          flush = max;
-        }
-      }
-      return flush;
-    }
+    //最初にデータ取得＆onSnapshotでリアルタイムにデータを取得
+    onChildAdded(ch_dbRef, function (data) {
+      const msg = data.val(); //オブジェクトデータを取得し、変数msgに代入
+      const key = data.key; //データのユニークキー（削除や更新に使用可能）
+      //表示用テキスト・HTMLを作成
+      let h = "<p>";
+      h += msg.uname;
+      h += "<br>";
+      h += msg.text;
+      h += "</p>";
+      $("#output").append(h); //#outputの最後に追加
+      scrollToEnd()
+    });
 
-    function isStraight(hand) {
-      let straight = -1;
-      let max = Math.max.apply(
-        null,
-        hand.map((item) => item[1])
-      );
-      let min = Math.min.apply(
-        null,
-        hand.map((item) => item[1])
-      );
-      let diff = max - min;
-      if (diff == 4) {
-        straight = max;
-      } else if (diff == 12) {
-        let min2 = hand
-          .map((item) => item[1])
-          .sort(function (a, b) {
-            return a - b;
-          })[1];
-        if (max - min2 == 3) {
-          straight = 13;
-        }
-      }
-      return straight;
-    }
-
-    function cntPairs(hand) {
-      let num_pair1 = -1;
-      let num_pair2 = -1;
-      let threeofakinds = -1;
-      let fourofakinds = -1;
-      let kicker = -1;
-      let count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-      for (let k = 0; k < 13; k++) {
-        for (let i = 0; i < 5; i++) {
-          if (hand[i][1] == k) {
-            count[k] += 1;
-          }
-        }
-      }
-      // console.log(count);
-      // pair
-      let pair_flg = 0;
-      for (let j = 0; j < 13; j++) {
-        if (pair_flg == 0) {
-          if (count[j] == 2) {
-            if (j == 0) {
-              num_pair1 = 13;
-            } else {
-              num_pair1 = j;
-            }
-            pair_flg = 1;
-          }
-        } else if (pair_flg == 1) {
-          if (count[j] == 2) {
-            num_pair2 = j;
-            if (num_pair1 == 13) {
-              num_pair2 = 13;
-              num_pair1 = j;
-            }
-          }
-        }
-        if (count[j] == 3) {
-          if (j == 0) {
-            threeofakinds = 13;
-          } else {
-            threeofakinds = j;
-          }
-        }
-        if (count[j] == 4) {
-          if (j == 0) {
-            fourofakinds = 13;
-          } else {
-            fourofakinds = j;
-          }
-        }
-        if (count[j] == 1) {
-          kicker = j;
-        }
-      }
-      if (count[0] == 1) {
-        kicker = 13;
-      }
-      return [num_pair1, num_pair2, threeofakinds, fourofakinds, kicker];
-    }
+    function scrollToEnd() {
+      const messagesArea = document.getElementById('output');
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    } 
   </script>
 </html>

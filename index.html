@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="./js/jquery-2.1.3.min.js"></script>
+    <title>TH</title>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        height: 100%;
+        text-align: center;
+        background-color: rgb(190, 205, 214);
+      }
+      #select,
+      #join {
+        height: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        margin: auto;
+      }
+      .select_user,
+      #join_user {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        margin: auto;
+      }
+      button {
+        margin: auto;
+        width: 360px;
+        height: 120px;
+        color: black;
+        border: 0;
+        font-size: 40px;
+        cursor: pointer;
+      }
+      .neumorphism {
+        background-color: rgb(190, 205, 214);
+        padding: 50px;
+      }
+      .neumorphism .box {
+        border-radius: 10px;
+        background-color: rgb(190, 205, 214);
+        transition: box-shadow 0.5s;
+        box-shadow: 10px 10px 30px rgba(18, 47, 61, 0.5),
+          -10px -10px 30px rgba(248, 253, 255, 0.9),
+          inset 10px 10px 30px transparent, inset -10px -10px 30px transparent;
+      }
+      .neumorphism .box:hover {
+        box-shadow: 10px 10px 30px transparent, -10px -10px 30px transparent,
+          inset 10px 10px 30px rgba(18, 47, 61, 0.5),
+          inset -10px -10px 30px rgba(248, 253, 255, 0.9);
+        /* color: aliceblue; */
+      }
+
+      .hover_off {
+        pointer-events: none;
+      }
+
+      #player1-btn {
+        color: red;
+      }
+      #player2-btn {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <div id="select">
+      <div class="select_user neumorphism">
+        <button class="box" id="player1-btn">Player1</button>
+      </div>
+      <div class="select_user neumorphism">
+        <button class="box" id="player2-btn">Player2</button>
+      </div>
+    </div> -->
+    <div id="join">
+      <div class="join_user neumorphism">
+        <button class="box" id="join-btn">Join</button>
+        <h1>待機中は0名</h1>
+      </div>
+    </div>
+  </body>
+  <script>
+    $(function () {
+      $("button").on("click", function () {
+        $(this).html("少々おまちください");
+        $(this).addClass("hover_off");
+        $(this).css("font-size", "30px");
+        $("button").prop("disabled", true);
+        console.log("click");
+      });
+    });
+  </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      onChildAdded,
+      remove,
+      onChildRemoved,
+      child,
+      get,
+      onChildChanged,
+    } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJTAoocmRo7J8yBmuFS17pFl4JirW4jNs",
+      authDomain: "texasholdem-afd55.firebaseapp.com",
+      projectId: "texasholdem-afd55",
+      storageBucket: "texasholdem-afd55.appspot.com",
+      messagingSenderId: "326627407513",
+      appId: "1:326627407513:web:070aac25625a093a066a08",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const max_player = 2;
+
+    // sessionStorage用（各自保持データ）
+    let ss_th_number = {
+      table_id: -1,
+      order_player: -1,
+      max_player: max_player,
+    };
+    // 初期化
+    if (!sessionStorage.getItem("TH_number")) {
+      const jsonString = JSON.stringify(ss_th_number);
+      sessionStorage.setItem("TH_number", jsonString);
+    }
+    ss_th_number = JSON.parse(sessionStorage.getItem("TH_number"));
+
+    // db用（共通保持データ）
+    let waiting = {
+      number: [0, 0, 0, 0],
+    };
+
+    const wt_dbRef = ref(db, "texasholdem/waiting");
+    // set(wt_dbRef, waiting);
+
+    let table = {
+      phase: -1,
+      table_id: -1,
+      num_player: -1,
+      card: [],
+      strength: [],
+      pattern: [],
+      result: [],
+    };
+
+    $("#join-btn").on("click", function () {
+      if (ss_th_number.table_id < 0) {
+        // テーブル設定
+        setTable();
+      }
+
+      //   let table_id = 1;
+      //   let name_collection = "texasholdem/table" + table_id;
+
+      //   const dbRef = ref(db, name_collection);
+      //   set(dbRef, table);
+      //   set(wt_dbRef, waiting);
+    });
+
+    // テーブル設定後、テーブル上限を待つ
+    onChildChanged(wt_dbRef, function (data) {
+      console.log("data changed");
+      ss_th_number = JSON.parse(sessionStorage.getItem("TH_number"));
+      console.log(ss_th_number.table_id);
+      if (ss_th_number.table_id >= 0) {
+        // テーブル上限待つ
+        let waiting_list = data.val();
+        console.log(waiting_list);
+        if (waiting_list[ss_th_number.table_id] == max_player) {
+          // max_playerになったら遷移
+          window.location.href = "/poker.html";
+        }
+      }
+    });
+
+    async function getWaitingData() {
+      const dbRef = ref(getDatabase());
+      await get(child(dbRef, "texasholdem/waiting"))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            waiting = snapshot.val();
+            console.log("snapshot.val()");
+            console.log(snapshot.val());
+          } else {
+            console.log("No data available");
+            set(wt_dbRef, waiting);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    async function setTable() {
+      await getWaitingData();
+      console.log("waiting.number");
+      console.log(waiting.number);
+      for (let i = 0; i < waiting.number.length; i++) {
+        if (waiting.number[i] < max_player) {
+          let num_seated = waiting.number[i];
+          waiting.number[i]++;
+          ss_th_number.table_id = i;
+          ss_th_number.order_player = num_seated;
+          const jsonString = JSON.stringify(ss_th_number);
+          await sessionStorage.setItem("TH_number", jsonString);
+          set(wt_dbRef, waiting);
+          return;
+        }
+      }
+    }
+
+    // let name_table;
+
+    // let database = firebase.database();
+    // let dataRef = database.ref(name_table);
+
+    // dataRef.once("value").then(function (snapchat) {
+    //   document;
+    // });
+    //
+    //
+    //
+    //
+    //
+    // sending
+    // $("#join-btn").on("click", function () {
+    //   const msg = {
+    //     uname: $("#uname").val(),
+    //     text: $("#text").val(),
+    //   };
+    //   const newPostRef = push(dbRef);
+    //   set(newPostRef, msg);
+    // });
+
+    // // receiving
+    // onChildAdded(dbRef, function (data) {
+    //   const msg = data.val();
+    //   const key = data.key; // Get Unique Key
+    //   let h = "<p>";
+    //   h += msg.uname;
+    //   h += "<br>";
+    //   h += msg.text;
+    //   h += "</p>";
+    //   $("#output").append(h);
+    // });
+  </script>
+</html>
