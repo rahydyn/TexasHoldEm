@@ -220,6 +220,7 @@
     // Firebase定義
     //
     // Import the functions you need from the SDKs you need
+    import { envApiKey, envAuthDomain, envProjectId, envStorageBucket, envMessagingSenderId, envAppId } from "./js/sdk-id.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js";
     import {
       getDatabase,
@@ -236,13 +237,13 @@
 
     // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyAJTAoocmRo7J8yBmuFS17pFl4JirW4jNs",
-      authDomain: "texasholdem-afd55.firebaseapp.com",
-      projectId: "texasholdem-afd55",
-      storageBucket: "texasholdem-afd55.appspot.com",
-      messagingSenderId: "326627407513",
-      appId: "1:326627407513:web:070aac25625a093a066a08",
-    };
+        apiKey: envApiKey,
+        authDomain: envAuthDomain,
+        projectId: envProjectId,
+        storageBucket: envStorageBucket,
+        messagingSenderId: envMessagingSenderId,
+        appId: envAppId,
+      };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
